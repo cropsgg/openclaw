@@ -123,5 +123,8 @@ export function formatLiteralProviderPrefixedModelRef(provider: string, modelRef
   if (normalizedRef.startsWith(literalPrefix)) {
     return trimmedRef;
   }
-  return normalizedRef.startsWith(`${providerId}/`) ? `${providerId}/${trimmedRef}` : trimmedRef;
+  if (normalizedRef.startsWith(`${providerId}/`)) {
+    return trimmedRef;
+  }
+  return `${providerId}/${trimmedRef}`;
 }

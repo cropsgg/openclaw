@@ -97,10 +97,25 @@ export function resolveGoogleGenerativeAiApiOrigin(baseUrl?: string): string {
   ).replace(/\/v1beta$/i, "");
 }
 
+function isGoogleVertexBaseUrl(baseUrl?: string): boolean {
+  const raw = normalizeOptionalString(baseUrl);
+  if (!raw) {
+    return false;
+  }
+  try {
+    return new URL(raw).hostname.toLowerCase().includes("aiplatform.googleapis.com");
+  } catch {
+    return /aiplatform\.googleapis\.com/i.test(raw);
+  }
+}
+
 export function shouldNormalizeGoogleGenerativeAiProviderConfig(
   providerKey: string,
   provider: GoogleProviderConfigLike,
 ): boolean {
+  if (providerKey === "google-vertex" && isGoogleVertexBaseUrl(provider.baseUrl)) {
+    return false;
+  }
   if (isGoogleGenerativeAiApi(provider.api)) {
     return true;
   }
